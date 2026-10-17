@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alerts - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+
+        <a href="/weather">🌡️ Weather Data</a>
+
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+
+        <a href="/alerts">🚨 Alerts</a>
+
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <div class="header">
+
+            <div>
+
+                <h1>Alerts</h1>
+
+                <p>
+                    Heatwave warnings and early-alert information
+                </p>
+
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+
+        </div>
+
+
+        <!-- Alerts Table -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Generated Alerts</h2>
+
+                <a href="/">← Dashboard</a>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Alert ID</th>
+
+                        <th>Event ID</th>
+
+                        <th>Date</th>
+
+                        <th>Time</th>
+
+                        <th>Alert Level</th>
+
+                        <th>Message</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for alert in alerts %}
+
+                    <tr>
+
+                        <td>{{ alert[0] }}</td>
+
+                        <td>{{ alert[1] }}</td>
+
+                        <td>{{ alert[2] }}</td>
+
+                        <td>{{ alert[3] }}</td>
+
+                        <td>{{ alert[4] }}</td>
+
+                        <td>{{ alert[5] }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="info-box">
+
+            <h2>🚨 Early Warning System</h2>
+
+            <p>
+
+                Alerts are generated when dangerous weather conditions
+                or heatwave events are detected. These warnings help
+                communicate potential risks and support timely
+                decision-making.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

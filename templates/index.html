@@ -1,0 +1,452 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Intelligence Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid #0b9b8f;
+        }
+
+        .analytics-card h3 {
+            margin: 0 0 12px;
+            color: #536b73;
+            font-size: 14px;
+        }
+
+        .analytics-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #063b4c;
+        }
+
+        .analytics-card small {
+            display: block;
+            margin-top: 7px;
+            color: #73858a;
+        }
+
+        .graph-section,
+        .table-section {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            margin: 22px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .graph-container {
+            position: relative;
+            height: 340px;
+            width: 100%;
+        }
+
+        .table-section {
+            overflow-x: auto;
+        }
+
+        .table-section h2,
+        .graph-section h2 {
+            color: #063b4c;
+            margin-top: 0;
+        }
+
+        .severity {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #fff0e6;
+            color: #c45a16;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            color: #73858a;
+            padding: 18px 0;
+        }
+
+        /* New analytics feature cards */
+        .feature-heading {
+            color: #063b4c;
+            margin-top: 32px;
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            color: #73858a;
+            margin-bottom: 18px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .feature-card {
+            display: block;
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #e3ebee;
+            border-top: 4px solid #0b9b8f;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            text-decoration: none;
+            color: #063b4c;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card .feature-icon {
+            font-size: 30px;
+            margin-bottom: 14px;
+        }
+
+        .feature-card h3 {
+            font-size: 17px;
+            margin: 0 0 10px;
+        }
+
+        .feature-card p {
+            color: #73858a;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .feature-card .feature-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: #087f75;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .feature-card.risk {
+            border-top-color: #ed9145;
+        }
+
+        .feature-card.map {
+            border-top-color: #1687c9;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 900px) {
+            .analytics-grid,
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .graph-container {
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🌍 Climate AI</h2>
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+        <a href="/weather">🌡️ Weather Data</a>
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+        <a href="/alerts">🚨 Alerts</a>
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+        <!-- NEW FEATURES -->
+        <a href="/comparison">📊 City Comparison</a>
+        <a href="/risk">⚠️ Heatwave Risk</a>
+        <a href="/weather-map">🗺️ Weather Map</a>
+    </div>
+
+    <!-- Main dashboard -->
+    <div class="main-content">
+
+        <div class="header">
+            <div>
+                <h1>Climate Intelligence Dashboard</h1>
+                <p>Monitor weather conditions and heatwave activity</p>
+            </div>
+            <div class="status">🟢 Database Connected</div>
+        </div>
+
+        <!-- Existing statistics -->
+        <div class="cards">
+            <div class="card">
+                <h3>Monitoring Stations</h3>
+                <h2>{{ station_count }}</h2>
+                <p>Registered stations</p>
+            </div>
+
+            <div class="card">
+                <h3>Weather Readings</h3>
+                <h2>{{ reading_count }}</h2>
+                <p>Total recorded observations</p>
+            </div>
+
+            <div class="card">
+                <h3>Heatwave Events</h3>
+                <h2>{{ heatwave_count }}</h2>
+                <p>Recorded events</p>
+            </div>
+
+            <div class="card">
+                <h3>Active Alerts</h3>
+                <h2>{{ alert_count }}</h2>
+                <p>Alerts stored in the database</p>
+            </div>
+        </div>
+
+        <!-- Existing temperature analytics -->
+        <h2 style="color:#063b4c; margin-top:30px;">
+            🌡️ Temperature Analytics
+        </h2>
+
+        <div class="analytics-grid">
+
+            <div class="analytics-card">
+                <h3>Highest Recorded Temperature</h3>
+                <div class="value">
+                    {% if max_temperature is not none %}
+                        {{ max_temperature }} °C
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </div>
+                <small>Maximum across stored readings</small>
+            </div>
+
+            <div class="analytics-card" style="border-left-color:#1687c9;">
+                <h3>Lowest Recorded Temperature</h3>
+                <div class="value">
+                    {% if min_temperature is not none %}
+                        {{ min_temperature }} °C
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </div>
+                <small>Minimum across stored readings</small>
+            </div>
+
+            <div class="analytics-card" style="border-left-color:#ed9145;">
+                <h3>Average Temperature</h3>
+                <div class="value">
+                    {% if avg_temperature is not none %}
+                        {{ avg_temperature }} °C
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </div>
+                <small>Average across stored readings</small>
+            </div>
+
+        </div>
+
+        <!-- NEW FEATURE CARDS -->
+        <h2 class="feature-heading">🚀 Advanced Climate Analytics</h2>
+        <p class="feature-description">
+            Explore additional tools for comparing stations, assessing temperature risk,
+            and viewing weather station locations.
+        </p>
+
+        <div class="feature-grid">
+
+            <a href="/comparison" class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>City Comparison</h3>
+                <p>
+                    Compare weather stations using maximum temperature,
+                    minimum temperature, humidity, and reading counts.
+                </p>
+                <span class="feature-link">Open City Comparison →</span>
+            </a>
+
+            <a href="/risk" class="feature-card risk">
+                <div class="feature-icon">🔥</div>
+                <h3>Smart Heatwave Risk</h3>
+                <p>
+                    Review recent weather readings classified into
+                    demonstration risk levels based on temperature.
+                </p>
+                <span class="feature-link">View Heatwave Risk →</span>
+            </a>
+
+            <a href="/weather-map" class="feature-card map">
+                <div class="feature-icon">🗺️</div>
+                <h3>Interactive Weather Map</h3>
+                <p>
+                    Explore weather stations on a map and view their
+                    latest temperature, humidity, and risk classifications.
+                </p>
+                <span class="feature-link">Open Weather Map →</span>
+            </a>
+
+        </div>
+
+        <!-- Existing temperature graph -->
+        <div class="graph-section">
+            <h2>📈 Daily Maximum vs Minimum Temperature</h2>
+            <p>
+                Compares the highest and lowest recorded temperatures for each date.
+            </p>
+
+            {% if chart_labels %}
+                <div class="graph-container">
+                    <canvas id="temperatureChart"></canvas>
+                </div>
+            {% else %}
+                <p class="empty-message">
+                    No temperature readings are available to display a graph.
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Existing heatwave events table -->
+        <div class="table-section">
+            <h2>🔥 Recent Heatwave Events</h2>
+
+            {% if recent_heatwaves %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Weather Station</th>
+                            <th>Maximum Temperature</th>
+                            <th>Severity</th>
+                            <th>Start Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for event in recent_heatwaves %}
+                        <tr>
+                            <td>{{ event[0] }}</td>
+                            <td>{{ event[1] }}</td>
+                            <td>
+                                {% if event[2] is not none %}
+                                    {{ event[2] }} °C
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="severity">
+                                    {{ event[3] if event[3] is not none else 'Unknown' }}
+                                </span>
+                            </td>
+                            <td>{{ event[4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="empty-message">No heatwave events found.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Existing temperature graph JavaScript -->
+    {% if chart_labels %}
+    <script>
+        const labels = {{ chart_labels | tojson }};
+        const maximumTemperatures = {{ chart_maximums | tojson }};
+        const minimumTemperatures = {{ chart_minimums | tojson }};
+
+        const chartCanvas = document.getElementById("temperatureChart");
+
+        new Chart(chartCanvas, {
+            type: "line",
+
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Maximum Temperature (°C)",
+                        data: maximumTemperatures,
+                        borderColor: "#e76f51",
+                        backgroundColor: "rgba(231, 111, 81, 0.15)",
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        label: "Minimum Temperature (°C)",
+                        data: minimumTemperatures,
+                        borderColor: "#1687c9",
+                        backgroundColor: "rgba(22, 135, 201, 0.12)",
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        tension: 0.3,
+                        fill: false
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+
+                plugins: {
+                    legend: {
+                        position: "top"
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: "Temperature (°C)"
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Reading Date / Station"
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+
+</body>
+</html>
+```

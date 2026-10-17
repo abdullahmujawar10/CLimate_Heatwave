@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Weather Reading - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🌍 Climate AI</h2>
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+        <a href="/weather">🌡️ Weather Data</a>
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+        <a href="/alerts">🚨 Alerts</a>
+        <a href="/forecasts">🌤️ Forecasts</a>
+    </div>
+
+    <!-- FIXED: use main-content to match style.css -->
+    <div class="main-content">
+
+        <div class="header">
+            <div>
+                <h1>Add Weather Reading</h1>
+                <p>Enter a new sensor observation</p>
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+        </div>
+
+        <div class="section">
+
+            <div class="section-header">
+                <h2>🌡️ Sensor Reading Details</h2>
+                <a href="/weather" class="cancel-button">← Back to Weather</a>
+            </div>
+
+            <form method="POST" action="/weather/add">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="station_id">Weather Station</label>
+                        <select id="station_id" name="station_id" required>
+                            <option value="">Select Station</option>
+                            {% for station in stations %}
+                            <option value="{{ station[0] }}">
+                                {{ station[1] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reading_date">Reading Date</label>
+                        <input type="date" id="reading_date"
+                               name="reading_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reading_time">Reading Time</label>
+                        <input type="time" id="reading_time"
+                               name="reading_time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="temperature">Temperature (°C)</label>
+                        <input type="number" step="0.01"
+                               id="temperature" name="temperature"
+                               placeholder="e.g. 36.5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="humidity">Humidity (%)</label>
+                        <input type="number" step="0.01"
+                               id="humidity" name="humidity"
+                               placeholder="e.g. 65" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wind_speed">Wind Speed (km/h)</label>
+                        <input type="number" step="0.01"
+                               id="wind_speed" name="wind_speed"
+                               placeholder="e.g. 12.5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rainfall">Rainfall (mm)</label>
+                        <input type="number" step="0.01"
+                               id="rainfall" name="rainfall"
+                               placeholder="e.g. 2.5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pressure">Pressure (hPa)</label>
+                        <input type="number" step="0.01"
+                               id="pressure" name="pressure"
+                               placeholder="e.g. 1012" required>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-button">
+                        💾 Save Reading
+                    </button>
+
+                    <a href="/weather" class="cancel-button">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="info-box">
+            <h2>🌡️ Weather Data Collection</h2>
+            <p>
+                Enter the observation recorded by your weather station.
+                Saving this form inserts the reading into your PostgreSQL
+                database for climate monitoring and analysis.
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

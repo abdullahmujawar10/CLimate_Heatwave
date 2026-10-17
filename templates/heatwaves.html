@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Heatwave Events - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+
+        <a href="/weather">🌡️ Weather Data</a>
+
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+
+        <a href="/alerts">🚨 Alerts</a>
+
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- HEADER -->
+        <div class="header">
+
+            <div>
+
+                <h1>Heatwave Events</h1>
+
+                <p>
+                    Monitoring and analysis of recorded heatwave events
+                </p>
+
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+
+        </div>
+
+
+        <!-- HEATWAVE TABLE -->
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Recorded Heatwave Events</h2>
+
+                <a href="/">
+                    ← Dashboard
+                </a>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Event ID</th>
+
+                            <th>Station</th>
+
+                            <th>Start Date</th>
+
+                            <th>End Date</th>
+
+                            <th>Maximum Temperature</th>
+
+                            <th>Severity</th>
+
+                            <th>Description</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for event in events %}
+
+                        <tr>
+
+                            <td>{{ event[0] }}</td>
+
+                            <td>{{ event[1] }}</td>
+
+                            <td>{{ event[2] }}</td>
+
+                            <td>{{ event[3] }}</td>
+
+                            <td>{{ event[4] }} °C</td>
+
+                            <td>{{ event[5] }}</td>
+
+                            <td>{{ event[6] }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+        <div class="info-box">
+
+            <h2>🔥 Heatwave Monitoring</h2>
+
+            <p>
+
+                Heatwave events are identified using weather observations
+                collected from monitoring stations. Historical heatwave
+                information helps analyze climate patterns and supports
+                early-warning systems.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

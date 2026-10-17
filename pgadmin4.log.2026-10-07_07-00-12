@@ -1,0 +1,6 @@
+2026-10-07 06:43:16,008: WARNING	werkzeug:	Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+2026-10-07 06:43:21,339: WARNING	pgadmin:	There are no saved passwords
+2026-10-07 07:00:12,386: ERROR	pgadmin:	Failed to execute query (execute_async) for the server #1 - CONN:6835818(Query-id: 6637049):
+Error Message:ERROR:  relation "alert" already exists 
+
+SQL state: 42P07

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Comparison | Climate AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .page-card {
+            background: white;
+            padding: 24px;
+            margin: 22px 0;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .page-card h2 {
+            color: #063b4c;
+            margin-top: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #e5edf0;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #eaf6f6;
+            color: #063b4c;
+        }
+
+        tr:hover {
+            background: #f6fbfb;
+        }
+
+        .intro {
+            color: #647b83;
+            margin-bottom: 20px;
+        }
+
+        .empty {
+            color: #647b83;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 700px) {
+            .chart-container {
+                height: 280px;
+            }
+
+            .page-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>🌍 Climate AI</h2>
+    <p class="subtitle">Heatwave Monitoring</p>
+
+    <a href="/">📊 Dashboard</a>
+    <a href="/weather">🌡️ Weather Data</a>
+    <a href="/heatwaves">🔥 Heatwave Events</a>
+    <a href="/alerts">🚨 Alerts</a>
+    <a href="/forecasts">🌤️ Forecasts</a>
+    <a href="/comparison">📊 City Comparison</a>
+    <a href="/risk">🔥 Heatwave Risk</a>
+    <a href="/weather-map">🗺️ Weather Map</a>
+</div>
+
+<div class="main-content">
+
+    <div class="header">
+        <div>
+            <h1>📊 City Weather Comparison</h1>
+            <p>Compare temperature and humidity across monitoring stations.</p>
+        </div>
+    </div>
+
+    <p class="intro">
+        This page uses recorded sensor readings to compare stations.
+        The maximum and minimum values represent all stored readings for each station.
+    </p>
+
+    <div class="page-card">
+        <h2>Maximum vs Minimum Temperature</h2>
+
+        {% if chart_labels %}
+        <div class="chart-container">
+            <canvas id="temperatureComparison"></canvas>
+        </div>
+        {% else %}
+        <p class="empty">No weather stations are available for comparison.</p>
+        {% endif %}
+    </div>
+
+    <div class="page-card">
+        <h2>Average Humidity by Station</h2>
+
+        {% if chart_labels %}
+        <div class="chart-container">
+            <canvas id="humidityComparison"></canvas>
+        </div>
+        {% else %}
+        <p class="empty">No humidity readings are available.</p>
+        {% endif %}
+    </div>
+
+    <div class="page-card">
+        <h2>Station Statistics</h2>
+
+        {% if comparison_rows %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Station</th>
+                        <th>Region</th>
+                        <th>Maximum (°C)</th>
+                        <th>Minimum (°C)</th>
+                        <th>Average Humidity (%)</th>
+                        <th>Total Readings</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for station in comparison_rows %}
+                    <tr>
+                        <td>{{ station.station_name }}</td>
+                        <td>{{ station.region_name or "Not specified" }}</td>
+                        <td>
+                            {% if station.maximum_temperature is not none %}
+                                {{ "%.1f"|format(station.maximum_temperature|float) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if station.minimum_temperature is not none %}
+                                {{ "%.1f"|format(station.minimum_temperature|float) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if station.average_humidity is not none %}
+                                {{ "%.1f"|format(station.average_humidity|float) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ station.reading_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">No station records were found.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% if chart_labels %}
+<script>
+    const stationLabels = {{ chart_labels | tojson }};
+    const maximumTemperatures = {{ chart_maximums | tojson }};
+    const minimumTemperatures = {{ chart_minimums | tojson }};
+    const averageHumidity = {{ chart_humidity | tojson }};
+
+    new Chart(document.getElementById("temperatureComparison"), {
+        type: "bar",
+        data: {
+            labels: stationLabels,
+            datasets: [
+                {
+                    label: "Maximum Temperature (°C)",
+                    data: maximumTemperatures,
+                    backgroundColor: "#ef765b"
+                },
+                {
+                    label: "Minimum Temperature (°C)",
+                    data: minimumTemperatures,
+                    backgroundColor: "#1687c9"
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: "Temperature (°C)"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Weather Station"
+                    }
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("humidityComparison"), {
+        type: "bar",
+        data: {
+            labels: stationLabels,
+            datasets: [{
+                label: "Average Humidity (%)",
+                data: averageHumidity,
+                backgroundColor: "#16a6a1"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 100,
+                    title: {
+                        display: true,
+                        text: "Humidity (%)"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Weather Station"
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+</body>
+</html>

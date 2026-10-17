@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Weather Reading - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+
+        <a href="/weather">🌡️ Weather Data</a>
+
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+
+        <a href="/alerts">🚨 Alerts</a>
+
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <div class="header">
+
+            <div>
+
+                <h1>Add Weather Reading</h1>
+
+                <p>
+                    Enter a new sensor observation
+                </p>
+
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+
+        </div>
+
+
+        <!-- Form -->
+
+        <div class="section">
+
+            <h2>🌡️ Sensor Reading Details</h2>
+
+            <form method="POST" action="/weather/add">
+
+                <div class="form-grid">
+
+
+                    <!-- Station -->
+
+                    <div class="form-group">
+
+                        <label>Weather Station</label>
+
+                        <select name="station_id" required>
+
+                            <option value="">
+                                Select Station
+                            </option>
+
+                            {% for station in stations %}
+
+                            <option value="{{ station[0] }}">
+                                {{ station[1] }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Date -->
+
+                    <div class="form-group">
+
+                        <label>Reading Date</label>
+
+                        <input
+                            type="date"
+                            name="reading_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Time -->
+
+                    <div class="form-group">
+
+                        <label>Reading Time</label>
+
+                        <input
+                            type="time"
+                            name="reading_time"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Temperature -->
+
+                    <div class="form-group">
+
+                        <label>Temperature (°C)</label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="temperature"
+                            placeholder="e.g. 36.5"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Humidity -->
+
+                    <div class="form-group">
+
+                        <label>Humidity (%)</label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="humidity"
+                            placeholder="e.g. 65"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Wind Speed -->
+
+                    <div class="form-group">
+
+                        <label>Wind Speed (km/h)</label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="wind_speed"
+                            placeholder="e.g. 12.5"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Rainfall -->
+
+                    <div class="form-group">
+
+                        <label>Rainfall</label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="rainfall"
+                            placeholder="e.g. 2.5"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Pressure -->
+
+                    <div class="form-group">
+
+                        <label>Pressure</label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="pressure"
+                            placeholder="e.g. 1012"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-buttons">
+
+                    <button type="submit" class="save-button">
+                        💾 Save Reading
+                    </button>
+
+                    <a href="/weather" class="cancel-button">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

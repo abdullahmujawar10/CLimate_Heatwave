@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Forecasts - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+
+        <a href="/weather">🌡️ Weather Data</a>
+
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+
+        <a href="/alerts">🚨 Alerts</a>
+
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <div class="header">
+
+            <div>
+
+                <h1>Weather Forecasts</h1>
+
+                <p>
+                    Predicted weather conditions and heatwave probability
+                </p>
+
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+
+        </div>
+
+
+        <!-- Forecast Table -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Forecast Data</h2>
+
+                <a href="/">← Dashboard</a>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Forecast ID</th>
+
+                        <th>Station</th>
+
+                        <th>Forecast Date</th>
+
+                        <th>Predicted Temperature</th>
+
+                        <th>Predicted Humidity</th>
+
+                        <th>Heatwave Probability</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for forecast in forecasts %}
+
+                    <tr>
+
+                        <td>{{ forecast[0] }}</td>
+
+                        <td>{{ forecast[1] }}</td>
+
+                        <td>{{ forecast[2] }}</td>
+
+                        <td>{{ forecast[3] }} °C</td>
+
+                        <td>{{ forecast[4] }} %</td>
+
+                        <td>{{ forecast[5] }} %</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="info-box">
+
+            <h2>🌤️ Climate Forecasting</h2>
+
+            <p>
+
+                Forecast information is generated using prediction models
+                and historical weather observations. Predicted temperature,
+                humidity and heatwave probability can help identify
+                potential heatwave conditions in advance.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

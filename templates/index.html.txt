@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Climate Intelligence Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+        <a href="/weather">🌡️ Weather Data</a>
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+        <a href="/alerts">🚨 Alerts</a>
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <div class="header">
+            <div>
+                <h1>Climate Intelligence Dashboard</h1>
+                <p>Weather monitoring and heatwave early warning system</p>
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+        </div>
+
+
+        <!-- Statistics Cards -->
+        <div class="cards">
+
+            <div class="card">
+                <div class="icon">📡</div>
+                <h3>Weather Stations</h3>
+                <h2>{{ station_count }}</h2>
+                <p>Active monitoring stations</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🌡️</div>
+                <h3>Sensor Readings</h3>
+                <h2>{{ reading_count }}</h2>
+                <p>Total recorded observations</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🔥</div>
+                <h3>Heatwave Events</h3>
+                <h2>{{ heatwave_count }}</h2>
+                <p>Recorded heatwave events</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🚨</div>
+                <h3>Alerts</h3>
+                <h2>{{ alert_count }}</h2>
+                <p>Generated warnings</p>
+            </div>
+
+        </div>
+
+
+        <!-- Recent Weather Data -->
+        <div class="section">
+
+            <div class="section-header">
+                <h2>Recent Weather Readings</h2>
+                <a href="/weather">View All →</a>
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Station</th>
+                        <th>Region</th>
+                        <th>Temperature</th>
+                        <th>Humidity</th>
+                        <th>Wind Speed</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for reading in recent_readings %}
+
+                    <tr>
+                        <td>{{ reading[0] }}</td>
+                        <td>{{ reading[1] }}</td>
+                        <td>{{ reading[2] }} °C</td>
+                        <td>{{ reading[3] }} %</td>
+                        <td>{{ reading[4] }} km/h</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- System Information -->
+        <div class="info-box">
+
+            <h2>🌍 Climate Intelligence System</h2>
+
+            <p>
+                This system collects weather observations from multiple
+                monitoring stations and stores them in a PostgreSQL database.
+                The collected information can be used to monitor temperature,
+                humidity, heatwave events, forecasts and generate early warnings.
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatwave Risk | Climate AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin: 25px 0;
+        }
+
+        .risk-card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+            border-top: 5px solid #64748b;
+        }
+
+        .risk-card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 0;
+        }
+
+        .risk-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #063b4c;
+        }
+
+        .content-card {
+            background: white;
+            padding: 24px;
+            margin: 22px 0;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .content-card h2 {
+            margin-top: 0;
+            color: #063b4c;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #e5edf0;
+        }
+
+        th {
+            background: #eaf6f6;
+            color: #063b4c;
+            white-space: nowrap;
+        }
+
+        .risk-label {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .notice {
+            background: #fff7e6;
+            color: #805b12;
+            padding: 15px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .empty {
+            color: #647b83;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 950px) {
+            .risk-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 550px) {
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>🌍 Climate AI</h2>
+    <p class="subtitle">Heatwave Monitoring</p>
+
+    <a href="/">📊 Dashboard</a>
+    <a href="/weather">🌡️ Weather Data</a>
+    <a href="/heatwaves">🔥 Heatwave Events</a>
+    <a href="/alerts">🚨 Alerts</a>
+    <a href="/forecasts">🌤️ Forecasts</a>
+    <a href="/comparison">📊 City Comparison</a>
+    <a href="/risk">🔥 Heatwave Risk</a>
+    <a href="/weather-map">🗺️ Weather Map</a>
+</div>
+
+<div class="main-content">
+
+    <div class="header">
+        <div>
+            <h1>🔥 Heatwave Risk Detection</h1>
+            <p>Review the latest available temperature reading at each station.</p>
+        </div>
+    </div>
+
+    <div class="risk-grid">
+        <div class="risk-card" style="border-top-color:#22c55e;">
+            <h3>Low Risk</h3>
+            <div class="risk-number">{{ risk_counts["Low"] }}</div>
+        </div>
+
+        <div class="risk-card" style="border-top-color:#eab308;">
+            <h3>Moderate Risk</h3>
+            <div class="risk-number">{{ risk_counts["Moderate"] }}</div>
+        </div>
+
+        <div class="risk-card" style="border-top-color:#f97316;">
+            <h3>High Risk</h3>
+            <div class="risk-number">{{ risk_counts["High"] }}</div>
+        </div>
+
+        <div class="risk-card" style="border-top-color:#ef4444;">
+            <h3>Extreme Risk</h3>
+            <div class="risk-number">{{ risk_counts["Extreme"] }}</div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <h2>Latest Station Risk Assessment</h2>
+
+        <div class="notice">
+            <strong>Project demonstration rule:</strong>
+            Below 30°C = Low, 30°C to below 35°C = Moderate,
+            35°C to below 40°C = High, and 40°C or above = Extreme.
+            This simple temperature-based classification is for demonstrating
+            the project, not an official meteorological warning or health-risk assessment.
+        </div>
+
+        {% if risk_rows %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Station</th>
+                        <th>Region</th>
+                        <th>Latest Date</th>
+                        <th>Temperature</th>
+                        <th>Humidity</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for station in risk_rows %}
+                    <tr>
+                        <td>{{ station.station_name }}</td>
+                        <td>{{ station.region_name or "Not specified" }}</td>
+                        <td>{{ station.reading_date or "N/A" }}</td>
+                        <td>
+                            {% if station.temperature is not none %}
+                                {{ "%.1f"|format(station.temperature|float) }} °C
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if station.humidity is not none %}
+                                {{ "%.1f"|format(station.humidity|float) }}%
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="risk-label"
+                                  style="background:{{ station.risk_color }};">
+                                {{ station.risk }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">
+            No weather stations were found. Add stations and sensor readings first.
+        </p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

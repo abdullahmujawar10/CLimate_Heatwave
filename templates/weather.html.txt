@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Data - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">Heatwave Monitoring</p>
+
+        <a href="/">📊 Dashboard</a>
+
+        <a href="/weather">🌡️ Weather Data</a>
+
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+
+        <a href="/alerts">🚨 Alerts</a>
+
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="main">
+
+        <div class="header">
+
+            <div>
+
+                <h1>Weather Data</h1>
+
+                <p>
+                    Weather observations collected from monitoring stations
+                </p>
+
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+
+        </div>
+
+
+        <!-- Weather Table -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Sensor Readings</h2>
+
+                <a href="/">← Dashboard</a>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Reading ID</th>
+
+                        <th>Station</th>
+
+                        <th>Region</th>
+
+                        <th>Temperature</th>
+
+                        <th>Humidity</th>
+
+                        <th>Wind Speed</th>
+
+                        <th>Date & Time</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for reading in readings %}
+
+                    <tr>
+
+                        <td>{{ reading[0] }}</td>
+
+                        <td>{{ reading[1] }}</td>
+
+                        <td>{{ reading[2] }}</td>
+
+                        <td>{{ reading[3] }} °C</td>
+
+                        <td>{{ reading[4] }} %</td>
+
+                        <td>{{ reading[5] }} km/h</td>
+
+                        <td>{{ reading[6] }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="info-box">
+
+            <h2>🌡️ About Weather Monitoring</h2>
+
+            <p>
+
+                Weather stations continuously collect environmental
+                information such as temperature, humidity and wind speed.
+                These sensor readings are stored in the PostgreSQL database
+                and can be used for climate analysis and heatwave detection.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

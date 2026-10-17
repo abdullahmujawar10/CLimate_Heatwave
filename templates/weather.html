@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Data - Climate Intelligence</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>🌍 Climate AI</h2>
+
+        <p class="subtitle">
+            Heatwave Monitoring
+        </p>
+
+        <a href="/">📊 Dashboard</a>
+
+        <a href="/weather">🌡️ Weather Data</a>
+
+        <a href="/heatwaves">🔥 Heatwave Events</a>
+
+        <a href="/alerts">🚨 Alerts</a>
+
+        <a href="/forecasts">🌤️ Forecasts</a>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main-content">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <div>
+
+                <h1>Weather Data</h1>
+
+                <p>
+                    Weather observations collected from monitoring stations
+                </p>
+
+            </div>
+
+            <div class="status">
+                🟢 Database Connected
+            </div>
+
+        </div>
+
+
+        <!-- WEATHER SECTION -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    Sensor Readings
+                </h2>
+
+                <div>
+
+                    <a href="/weather/add"
+                       class="add-button">
+
+                        ➕ Add Reading
+
+                    </a>
+
+                    &nbsp;
+
+                    <a href="/">
+                        ← Dashboard
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH AND FILTER -->
+
+            <form method="GET"
+                  action="/weather"
+                  class="filter-form">
+
+                <!-- Search -->
+
+                <div class="form-group">
+
+                    <label>
+                        🔍 Search Station
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Enter station name"
+                        value="{{ search }}">
+
+                </div>
+
+
+                <!-- Station -->
+
+                <div class="form-group">
+
+                    <label>
+                        📡 Station
+                    </label>
+
+                    <select name="station">
+
+                        <option value="">
+                            All Stations
+                        </option>
+
+                        {% for station in stations %}
+
+                        <option
+                            value="{{ station[0] }}"
+                            {% if selected_station|string == station[0]|string %}
+                            selected
+                            {% endif %}>
+
+                            {{ station[1] }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Region -->
+
+                <div class="form-group">
+
+                    <label>
+                        📍 Region
+                    </label>
+
+                    <select name="region">
+
+                        <option value="">
+                            All Regions
+                        </option>
+
+                        {% for region in regions %}
+
+                        <option
+                            value="{{ region[0] }}"
+                            {% if selected_region|string == region[0]|string %}
+                            selected
+                            {% endif %}>
+
+                            {{ region[1] }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="filter-buttons">
+
+                    <button
+                        type="submit"
+                        class="save-button">
+
+                        🔍 Search
+
+                    </button>
+
+
+                    <a
+                        href="/weather"
+                        class="cancel-button">
+
+                        Reset
+
+                    </a>
+
+                </div>
+
+            </form>
+
+
+            <!-- WEATHER TABLE -->
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Reading ID</th>
+
+                            <th>Station</th>
+
+                            <th>Region</th>
+
+                            <th>Temperature</th>
+
+                            <th>Humidity</th>
+
+                            <th>Wind Speed</th>
+
+                            <th>Date & Time</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for reading in readings %}
+
+                        <tr>
+
+                            <td>
+                                {{ reading[0] }}
+                            </td>
+
+                            <td>
+                                {{ reading[1] }}
+                            </td>
+
+                            <td>
+                                {{ reading[2] }}
+                            </td>
+
+                            <td>
+                                {{ reading[3] }} °C
+                            </td>
+
+                            <td>
+                                {{ reading[4] }} %
+                            </td>
+
+                            <td>
+                                {{ reading[5] }}
+                            </td>
+
+                            <td>
+                                {{ reading[6] }}
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="/weather/edit/{{ reading[0] }}"
+                                    class="add-button">
+
+                                    ✏️ Edit
+
+                                </a>
+                                <a href="/weather/delete/{{ reading[0] }}"
+                                    class="cancel-button"
+                                    onclick="return confirm('Are you sure you want to delete this reading?');">
+                                    🗑️ Delete
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="info-box">
+
+            <h2>
+                🌡️ About Weather Monitoring
+            </h2>
+
+            <p>
+
+                Weather stations continuously collect environmental
+                information such as temperature, humidity and wind speed.
+                These sensor readings are stored in the PostgreSQL database
+                and can be used for climate analysis and heatwave detection.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
